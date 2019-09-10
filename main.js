@@ -6,17 +6,19 @@ let targetBlue = 0;
 
 let threshold = 120;
 
+let slider;
+
 function setup() {
   createCanvas(500, 500);
   cam = createCapture(VIDEO);
   cam.size(500, 500);
   cam.hide();
-  console.log(cam.width);
-  console.log(cam.height);
+  slider = createSlider(0, 1000, 120, 1);
   // noLoop();
 }
 
 function draw() {
+  threshold = slider.value();
   background(0);
   stroke(255);
   cam.loadPixels();
