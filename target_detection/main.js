@@ -4,29 +4,33 @@ let targetRed = 252;
 let targetGreen = 255;
 let targetBlue = 0;
 
-let threshold = 120;
-
-let slider;
-
 function setup() {
   createCanvas(500, 500);
   cam = createCapture(VIDEO);
   cam.size(500, 500);
   cam.hide();
-  slider = createSlider(0, 1000, 120, 1);
+  console.log(cam.width);
+  console.log(cam.height);
   // noLoop();
 }
 
 function draw() {
-  threshold = slider.value();
   background(0);
   stroke(255);
   cam.loadPixels();
 
   // console.log(cam.pixels);
 
+  translate(width, 0);
+  scale(-1,1);
+
   image(cam, 0, 0);
-  stroke(255);
+
+  let sumx = 0;
+  let sumy = 0;
+  let count = 0;
+
+  const threshold = 120;
 
   for(let i=0; i<500*500; i++) {
     const camred = cam.pixels[i*4];
@@ -34,15 +38,16 @@ function draw() {
     const camblue = cam.pixels[i*4 + 2];
 
     const dist_to_col = easyDist(camred, camgreen, camblue, targetRed, targetGreen, targetBlue);
-    // console.log(dist_to_col);
     if(dist_to_col < threshold*threshold) {
-      const x = Math.floor(i/500);
-      const y = i % 500;
-      // console.log(x,y)
-      if(random() < 0.2)
-        point(y,x);
+      const y = Math.floor(i/500);
+      const x = i % 500;
+      count++;
+      sumx += x;
+      sumy += y;
     }
   }
+  fill(0,0,250, 170);
+  ellipse(sumx/count, sumy/count, 50,50);
 }
 
 function mousePressed() {
