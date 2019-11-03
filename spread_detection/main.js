@@ -4,43 +4,123 @@ let targetRed = 252;
 let targetGreen = 255;
 let targetBlue = 0;
 
-let threshold = 120;
+let threshold = 0;
+let t2 = 0;
+let t3 = 0;
 
 let slider;
+
+let REF_IMAGE = Array(500*500).fill(0); //stores fixed background image
+
+let REF_IMAGE_HSV = Array(500*500).fill(0);
 
 function setup() {
   createCanvas(500, 500);
   cam = createCapture(VIDEO);
   cam.size(500, 500);
   cam.hide();
-  slider = createSlider(0, 2000, 120, 1);
+  slider = createSlider(0, 300, 0, 1);
+  slider2 = createSlider(0, 300, 0, 1);
+  slider3 = createSlider(0, 300, 0, 1);
+  stroke(255);
   // noLoop();
 }
 
 function draw() {
   threshold = slider.value();
+  t2 = slider2.value();
+  t3 = slider3.value();
   background(0);
-  stroke(255);
   cam.loadPixels();
-
-  // console.log(cam.pixels);
-
   image(cam, 0, 0);
-  stroke(255);
+  // backgroundDetect_RGB()
+  backgroundDetect_HSV()
+  // detectHSV();
+}
 
+function backgroundDetect_RGB() {
+  for(let i=0; i<500*500; i++) {
+    const camRed = cam.pixels[i*4];
+    const camGreen = cam.pixels[i*4 + 1];
+    const camBlue = cam.pixels[i*4 + 2];
+
+    const refRed = REF_IMAGE[i*4];
+    const refGreen = REF_IMAGE[i*4 + 1];
+    const refBlue = REF_IMAGE[i*4 + 2];
+
+    const dist_to_ref = manhattenDist(camRed, camGreen, camBlue, refRed, refGreen, refBlue);
+    if(dist_to_ref > threshold) { //first slider
+      const x = Math.floor(i/500);
+      const y = i % 500;
+      if(random() < 0.1)
+        point(y,x);
+    }
+  }
+}
+
+function backgroundDetect_HSV() {
+  for(let i=0; i<500*500; i++) {
+    const camRed = cam.pixels[i*4];
+    const camGreen = cam.pixels[i*4 + 1];
+    const camBlue = cam.pixels[i*4 + 2];
+
+    const pixelHSV = RGBtoHSV(camRed, camGreen, camBlue);
+
+    const refHue = REF_IMAGE_HSV[i*4];
+    const refSaturation = REF_IMAGE_HSV[i*4 + 1];
+    const refValue = REF_IMAGE_HSV[i*4 + 2];
+
+    if(pixelHSV.h > refHue - threshold && pixelHSV.h < refHue + threshold) { //hue check
+      if(pixelHSV.s > refSaturation - t2 && pixelHSV.s < refSaturation + t2) { //saturation check
+        if(pixelHSV.v > refValue - t3 && pixelHSV.v < refValue + t3) { //value check
+          const x = Math.floor(i/500);
+          const y = i % 500;
+          if(random() < 0.1)
+            point(y,x);
+        }
+      }
+    }
+
+  }
+}
+
+function detectRGB() {
+  stroke(50,50,255);
   for(let i=0; i<500*500; i++) {
     const camred = cam.pixels[i*4];
     const camgreen = cam.pixels[i*4 + 1];
     const camblue = cam.pixels[i*4 + 2];
 
     const dist_to_col = manhattenDist(camred, camgreen, camblue, targetRed, targetGreen, targetBlue);
-    // console.log(dist_to_col);
     if(dist_to_col < threshold) {
       const x = Math.floor(i/500);
       const y = i % 500;
-      // console.log(x,y)
-      if(random() < 0.2)
+      if(random() < 0.1)
         point(y,x);
+    }
+  }
+}
+
+function detectHSV() {
+  stroke(255,50,50);
+  const targetHSV = RGBtoHSV(targetRed, targetGreen, targetBlue);
+
+  for(let i=0; i<500*500; i++) {
+    const camRed = cam.pixels[i*4];
+    const camGreen = cam.pixels[i*4 + 1];
+    const camBlue = cam.pixels[i*4 + 2];
+
+    const pixelHSV = RGBtoHSV(camRed, camGreen, camBlue);
+
+    if(pixelHSV.h > targetHSV.h - t2 && pixelHSV.h < targetHSV.h + t2) { //hue check
+      if(pixelHSV.s > targetHSV.s - t2/2 && pixelHSV.s < targetHSV.s + t2/2) { //saturation check
+        if(pixelHSV.v > targetHSV.v - t2/2 && pixelHSV.v < targetHSV.v + t2/2) { //value check
+          const x = Math.floor(i/500);
+          const y = i % 500;
+          if(random() < 0.1)
+            point(y,x);
+        }
+      }
     }
   }
 }
@@ -71,4 +151,48 @@ function changeTargetColor(picker) {
   targetBlue = hexToB(hexColor);
 
   console.log(targetRed, targetGreen, targetBlue);
+}
+
+function setReference() {
+  cam.loadPixels();
+  console.log(cam.pixels);
+  REF_IMAGE = cam.pixels.slice();
+
+  //building image on HSV model
+  for(let i=0; i<500*500; i++) {
+    const r = REF_IMAGE[i*4];
+    const g = REF_IMAGE[i*4 + 1];
+    const b = REF_IMAGE[i*4 + 2];
+    const hsv = RGBtoHSV(r,g,b);
+    REF_IMAGE_HSV[i*4] = hsv.h;
+    REF_IMAGE_HSV[i*4 + 1] = hsv.s;
+    REF_IMAGE_HSV[i*4 + 2] = hsv.v;
+  }
+}
+
+function RGBtoHSV(r, g, b) {
+  const R = r/255;
+  const G = g/255;
+  const B = b/255;
+
+  const maxRGB = Math.max(R, G, B);
+  const minRGB = Math.min(R, G, B);
+
+  let targetH, targetS, targetV;
+  if(maxRGB == R) {
+    targetH = 60 * ((G - B)/(maxRGB - minRGB));
+  } else if(maxRGB == G) {
+    targetH = 60 * ((B - R)/(maxRGB - minRGB)) + 120;
+  } else if(maxRGB == B) {
+    targetH = 60 * ((R - G)/(maxRGB - minRGB)) + 240;
+  }
+  targetS = ((maxRGB - minRGB) / maxRGB ) * 100;
+  targetV = maxRGB*100;
+
+  let hsv = {};
+  hsv.h = targetH;
+  hsv.s = targetS;
+  hsv.v = targetV;
+
+  return hsv;
 }
