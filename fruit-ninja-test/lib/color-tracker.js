@@ -17,10 +17,13 @@ const ctrack = new p5(
 
     let showingNow = false;
 
+    // p.threshold_slider = null;
+
     p.setup = () => {
       cam = p.createCapture(p.VIDEO);
       cam.size(640, 480);
       cam.hide();
+      // p.threshold_slider = createSlider(0, 100, 0, 1);
       trackCanvas = p.createCanvas(640, 480);
       trackCanvas.hide();
     };
@@ -33,17 +36,17 @@ const ctrack = new p5(
 
       if(showingNow) {
         p.background(0);
-        // p.translate(640, 0);
-        // p.scale(-1,1);
-        // p.image(cam,0,0, 640,480);
-        // p.translate(0, 0);
-        // p.scale(1,1);
+        p.translate(640, 0);
+        p.scale(-1,1);
+        p.image(cam,0,0, 640,480);
+        p.translate(0, 0);
+        p.scale(1,1);
         p.fill(0,0,250, 170);
         p.ellipse(p.x, p.y, 50,50);
       }
     };
 
-    p.showCanvas = (show) => {
+    p.showCanvas = () => {
       trackCanvas.show();
       showingNow = true;
     };
@@ -63,7 +66,7 @@ const ctrack = new p5(
       let sumy = 0;
       let count = 0;
 
-      const threshold = 120;
+      const threshold = 212;
 
       for (let i = 0; i < 640 * 480; i++) {
         const camred = cam.pixels[i * 4];
@@ -71,7 +74,7 @@ const ctrack = new p5(
         const camblue = cam.pixels[i * 4 + 2];
 
         const dist_to_col = easyDist(camred, camgreen, camblue, p.targetRed, p.targetGreen, p.targetBlue);
-        if (dist_to_col < threshold * threshold) {
+        if (dist_to_col < threshold) {
           const y = Math.floor(i / 480);
           const x = i % 640;
           count++;
@@ -87,7 +90,8 @@ const ctrack = new p5(
     }
 
     function easyDist(x1, y1, z1, x2, y2, z2) {
-      return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2) + (z1 - z2) * (z1 - z2);
+      return Math.abs(x1-x2) + Math.abs(y1-y2) + Math.abs(z1-z2);
+      // return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2) + (z1 - z2) * (z1 - z2);
     }
   }
 );

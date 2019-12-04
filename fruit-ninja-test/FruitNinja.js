@@ -1,9 +1,9 @@
-const GRAVITY = 0.2;
+const GRAVITY = 0.5;
 
 const BLADE_SIZE = 20; // number of strokes before fading
 const BLADE_LENGTH = 150;  // maximum distance between points to connect two strokes
 
-const BAD_FRUIT_PROBABILITY = 0.9; // chance of each fruit being bad
+const BAD_FRUIT_PROBABILITY = 0.7; // chance of each fruit being bad means BOMB!
 
 var sword;
 var fruit = []; // on-screen fruit
@@ -11,20 +11,40 @@ var fruit = []; // on-screen fruit
 var lives;
 var score;
 
+let wood;
+
+let splatter;
+let boom;
+let throww;
+function preload() {
+  //images
+  wood = loadImage("images/wood.jpg");
+
+  //sounds
+  splatter = loadSound("sounds/splatter.mp3");
+  boom = loadSound("sounds/boom.mp3");
+  throww = loadSound("sounds/throw.mp3");
+}
+
 function setup() {
   createCanvas(600, 400);
 
   sword = new Blade(color("#FFF0EE"));
   frameRate(60);
 
-  lives = 3;
+  lives = 5;
   score = 0;
+}
+
+function mousePressed() {
+  getAudioContext().resume();
 }
 
 function draw() {
   background(51);
+  image(wood,0,0,wood.width, wood.height);
 
-	handleMouse();
+  handleMouse();
   score += handleFruit();
 
   drawScore();
@@ -36,14 +56,13 @@ function draw() {
  */
 function handleMouse() {
 
-	// if (mouseIsPressed) { // swinging
-		sword.swing(ctrack.x, ctrack.y);
-	// }
+  sword.swing(ctrack.x, ctrack.y);
+  // sword.swing(mouseX, mouseY);
 
   if (frameCount % 2 === 0) { // update half the time
 
-		sword.update();
-	}
+    sword.update();
+  }
 
   sword.draw();
 }
@@ -54,43 +73,42 @@ function handleMouse() {
  */
 function handleFruit() {
 
-	/* push new fruit */
+  /* push new fruit */
   if (frameCount % 10 === 0) {
 
-		if (noise(frameCount) > 0.66) {
+    if (noise(frameCount) > 0.56) {
+      fruit.push(randomFruit());
+    }
+  }
 
-			fruit.push(randomFruit());
-		}
-	}
+  /* handle slicing fruit */
+  var points = 0;
+  for (var i = fruit.length - 1; i >= 0; i--) {
 
-	/* handle slicing fruit */
-	var points = 0;
-	for (var i = fruit.length - 1; i >= 0; i--) {
+    fruit[i].update();
+    fruit[i].draw();
 
-		fruit[i].update();
-		fruit[i].draw();
+    if (!fruit[i].visible) { // if the fruit is no longer on-screen
 
-		if (!fruit[i].visible) { // if the fruit is no longer on-screen
+      if (!fruit[i].sliced && !fruit[i].bad) { // if we haven't sliced & it's not a bad
 
-			if (!fruit[i].sliced && !fruit[i].bad) { // if we haven't sliced & it's not a bad
+        lives--;
+      }
 
-				lives--;
-			}
+      if (lives < 1) { // if it's game over
 
-			if (lives < 1) { // if it's game over
+        endGame();
+      }
 
-				endGame();
-			}
+      fruit.splice(i, 1); // delete invisible fruit from array
+    } else {
 
-			fruit.splice(i, 1); // delete invisible fruit from array
-		} else {
+      points += (sword.checkForSlice(fruit[i])) ? 1 : 0; // if we sliced the fruit, add to the points
+    }
 
-			points += (sword.checkForSlice(fruit[i])) ? 1 : 0; // if we sliced the fruit, add to the points
-		}
+  }
 
-	}
-
-	return points;
+  return points;
 }
 
 /**
@@ -104,8 +122,8 @@ function drawLives() {
 
   for (var i = lives; i > 0; i--) {
 
-		ellipse(width - (i * 20 + 20), 50, 20);
-	}
+    ellipse(width - (i * 20 + 20), 50, 20);
+  }
 
 }
 
@@ -136,3 +154,5 @@ function endGame() {
   textSize(50);
   text("Press f5 to restart!", width / 2, height / 2 + 60);
 }
+
+

@@ -10,8 +10,8 @@ const ctrack = new p5(
     p.targetGreen = 0;
     p.targetBlue = 0;
 
-    p.displayWidth = 200;
-    p.displayHeight = 200;
+    p.displayWidth = 640;
+    p.displayHeight = 480;
 
     let trackCanvas;
 
@@ -22,7 +22,13 @@ const ctrack = new p5(
       cam.size(640, 480);
       cam.hide();
       trackCanvas = p.createCanvas(640, 480);
-      // trackCanvas.hide();
+      trackCanvas.hide();
+    };
+
+    p.setTargetColorRGB = (r,g,b) => {
+      p.targetRed = r;
+      p.targetGreen = g;
+      p.targetBlue = b;
     };
 
     p.draw = () => {
@@ -33,9 +39,9 @@ const ctrack = new p5(
 
       if(showingNow) {
         p.background(0);
-        // p.translate(640, 0);
+        // p.translate(p.width, 0);
         // p.scale(-1,1);
-        // p.image(cam,0,0, 640,480);
+        p.image(cam,0,0, 640,480);
         // p.translate(0, 0);
         // p.scale(1,1);
         p.fill(0,0,250, 170);
@@ -56,6 +62,13 @@ const ctrack = new p5(
     p.setDisplaySize = (width, height) => {
       p.displayWidth = width;
       p.displayHeight = height;
+    }
+
+    p.mousePressed = () => {
+      console.log('mouse pressed!');
+      let c = p.get(p.mouseX, p.mouseY);
+      console.log(c);
+      p.setTargetColorRGB(c[0],c[1],c[2]);
     }
 
     function doTrack() {
@@ -87,7 +100,8 @@ const ctrack = new p5(
     }
 
     function easyDist(x1, y1, z1, x2, y2, z2) {
-      return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2) + (z1 - z2) * (z1 - z2);
+      return Math.abs(x1-x2) + Math.abs(y1-y2) + Math.abs(z1-z2); 
+      // return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2) + (z1 - z2) * (z1 - z2);
     }
   }
 );

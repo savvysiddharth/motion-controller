@@ -1,7 +1,7 @@
 let cam;
 
 let targetRed = 252;
-let targetGreen = 255;
+let targetGreen = 0;
 let targetBlue = 0;
 
 let threshold = 0;
@@ -19,22 +19,24 @@ function setup() {
   cam = createCapture(VIDEO);
   cam.size(500, 500);
   cam.hide();
-  slider = createSlider(0, 300, 0, 1);
-  slider2 = createSlider(0, 300, 0, 1);
-  slider3 = createSlider(0, 300, 0, 1);
+  slider = createSlider(0, 2000, 120, 1);
+  // slider2 = createSlider(0, 300, 0, 1);
+  // slider3 = createSlider(0, 300, 0, 1);
   stroke(255);
   // noLoop();
 }
 
+let showVideo = true;
+
 function draw() {
   threshold = slider.value();
-  t2 = slider2.value();
-  t3 = slider3.value();
+  // t2 = slider2.value();
+  // t3 = slider3.value();
   background(0);
   cam.loadPixels();
-  image(cam, 0, 0);
+  if(showVideo) image(cam, 0, 0);
   // backgroundDetect_RGB()
-  backgroundDetect_HSV()
+  detectRGB();
   // detectHSV();
 }
 
@@ -85,7 +87,7 @@ function backgroundDetect_HSV() {
 }
 
 function detectRGB() {
-  stroke(50,50,255);
+  stroke(255);
   for(let i=0; i<500*500; i++) {
     const camred = cam.pixels[i*4];
     const camgreen = cam.pixels[i*4 + 1];
@@ -95,7 +97,7 @@ function detectRGB() {
     if(dist_to_col < threshold) {
       const x = Math.floor(i/500);
       const y = i % 500;
-      if(random() < 0.1)
+      if(random() < 0.05)
         point(y,x);
     }
   }

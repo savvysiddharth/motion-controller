@@ -50,8 +50,18 @@ function draw() {
   ellipse(sumx/count, sumy/count, 50,50);
 }
 
+function setTargetColorRGB(r,g,b) {
+  targetRed = r;
+  targetGreen = g;
+  targetBlue = b;
+}
+
 function mousePressed() {
   draw();
+  console.log('mouse pressed!');
+  let c = get(mouseX, mouseY);
+  console.log(c);
+  setTargetColorRGB(c[0],c[1],c[2]);
 }
 
 function easyDist(x1,y1,z1,x2,y2,z2) {
