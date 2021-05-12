@@ -45,8 +45,8 @@ Basic implementation of color segmentation, and later taking mean of segmented a
 
 This technique enables players to have laser pointer style input without any extra hardware requirement, but it requires to fix the distance between display and the player.
 
-<img src="https://user-images.githubusercontent.com/12862695/117966830-fd5e6480-b341-11eb-8489-23f006f98fe5.png" width=700px>
-<img src="https://user-images.githubusercontent.com/12862695/117967153-5b8b4780-b342-11eb-80be-5f721dc0e191.png" width=400px>
+<img src="https://user-images.githubusercontent.com/12862695/118027730-e50d3a80-b37f-11eb-8651-e2f115589142.jpg" width=700px>
+<img src="https://user-images.githubusercontent.com/12862695/118028028-39b0b580-b380-11eb-9255-de30c90f8370.jpg" width=400px>
 
 <br>
 
