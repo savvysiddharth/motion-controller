@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>project_test</title>
+  <style>
+    body {
+      background-color: rgb(50,50,50);
+    }
+
+    button {
+      border:none;
+      border-radius: 5px;
+      padding: 5px;
+    }
+
+    button:hover {
+      background-color: rgb(0, 133, 4);
+      color: white;
+    }
+
+    canvas, video {
+      position: absolute;
+      top: 50px;
+      left: 40px;
+    }
+
+    video {
+      object-fit: fill;
+    }
+
+    canvas {
+      z-index: 3;
+    }
+
+    video {
+      z-index: 2;
+      transform: rotateY(180deg);
+    }
+  </style>
+  <script src="../lib/p5.min.js"></script>
+  <script src="../lib/p5.dom.min.js"></script>
+  <script src="main.js"></script>
+</head>
+<body>
+  <!-- <input id="colpicker" type="color" onchange="changeTargetColor(this)" value="#ff0000" /> -->
+  <button onclick="clearDoodles()">clear all</button>
+  <button onclick="pauseApp()">stop</button>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>project_test</title>
+  <style>
+    body {
+      background-color: rgb(50,50,50);
+    }
+
+    button {
+      border:none;
+      border-radius: 5px;
+      padding: 5px;
+    }
+
+    button:hover {
+      background-color: rgb(0, 133, 4);
+      color: white;
+    }
+
+    canvas {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%,-50%);
+    }
+  </style>
+  <script src="../lib/p5.min.js"></script>
+  <script src="../lib/p5.dom.min.js"></script>
+</head>
+<body>
+  <input id="colpicker" type="color" onchange="changeTargetColor(this)" value="#ffff00" />
+  <br><br>
+  <button onclick="clearCanvas()">clear</button>
+  <button onclick="predict()">predict</button> <br><br>
+</body>
+<script src="main.js"></script>
+</html>

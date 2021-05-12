@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>project_test</title>
+  <style>
+    body {
+      background-color: rgb(50,50,50);
+    }
+
+    button {
+      border:none;
+      border-radius: 5px;
+      padding: 5px;
+    }
+
+    button:hover {
+      background-color: rgb(0, 133, 4);
+      color: white;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.4.0/dist/tf.min.js"></script>
+  <script src="../lib/p5.min.js"></script>
+  <script src="../lib/p5.dom.min.js"></script>
+</head>
+<body>
+  <!-- <input id="colpicker" type="color" onchange="changeTargetColor(this)" value="#ff0000" />
+  <br><br>
+  <button onclick="setReference()">set reference</button> -->
+  <button onclick="clearCanvas()">clear</button>
+  <button onclick="predict()">predict</button> <br><br>
+</body>
+<script>
+  let modelCall = tf.loadLayersModel('./model.json');
+
+  function setup() {
+    createCanvas(400,400);
+    background(255);
+  }
+
+  function draw() {
+  }
+
+  function predict() {
+    let img = get();
+    img.resize(28, 28);
+    img.loadPixels();
+
+    let pixels_1d = [];
+    for(let i=0; i<28*28; i++) {
+      pixels_1d.push(img.pixels[4*i]);
+    }
+    pixels_1d = pixels_1d.concat(pixels_1d).concat(pixels_1d);
+    let input = tf.tensor(pixels_1d, [1,28,28,3]);
+    modelCall.then((model) => {
+      let output = model.predict(input);
+      output.print();
+    });
+  }
+
+  function mouseDragged() {
+    fill(0);
+    ellipse(mouseX, mouseY, 20,20);
+  }
+
+  function clearCanvas() {
+    background(255);
+  }
+
+</script>
+<!-- <script src="main.js"></script> -->
+</html>

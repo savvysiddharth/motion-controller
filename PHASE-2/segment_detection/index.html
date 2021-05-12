@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>project_test</title>
+  <style>
+    body {
+      background-color: rgb(50,50,50);
+    }
+
+    button {
+      border:none;
+      border-radius: 5px;
+      padding: 5px;
+    }
+
+    button:hover {
+      background-color: rgb(0, 133, 4);
+      color: white;
+    }
+  </style>
+  <script src="../lib/p5.min.js"></script>
+  <script src="../lib/p5.dom.min.js"></script>
+</head>
+<body>
+  <input id="colpicker" type="color" onchange="changeTargetColor(this)" value="#ff0000" />
+  <br><br>
+  <button onclick="setReference()">set reference</button>
+  <br><br>
+  <button onclick="recorderSwitch()">record</button>
+  <br><br>
+  <button onclick="takeShot()">take a click</button>
+  <br><br>
+</body>
+<script src="main.js"></script>
+</html>
