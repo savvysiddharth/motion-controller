@@ -2,7 +2,7 @@
 
 The aim of this project is to design and implement a motion controller and keep its cost minimal. To achieve that, color based segmentation is used for tracking the controller. The controller is made of a pen and a plastic ball.
 
-<a href="#">[ Project Prototype Link ]</a>
+<a href="https://savvysiddharth.github.io/motion-controller/">[ Project Prototype Link ]</a>
 
 ## The Controller:
 
