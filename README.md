@@ -4,6 +4,14 @@ The aim of this project is to design and implement a motion controller and keep 
 
 <a href="https://savvysiddharth.github.io/motion-controller/">[ Project Prototype Link ]</a>
 
+## Table of Contents  
+
+- [The Controller](#the-controller)  
+- [Color Segmentation](#color-segmentation)
+- [Painting Test](#painting-test)
+- [Aim Approximation](#aim-approximation)
+- [Z-Axis Estimation](#z-axis-estimation)
+
 ## The Controller:
 
 This controller is simply made by sticking a pen into a hollow plastic ball.<br>
